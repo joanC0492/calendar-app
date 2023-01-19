@@ -1,0 +1,37 @@
+// @import "~bootstrap/scss/bootstrap";
+
+// Custom.scss
+// 1. Incluya funciones primero (para que pueda manipular colors, SVG, calc, etc.)
+@import "~bootstrap/scss/functions";
+
+// 2. Incluya cualquier anulación de variable predeterminada aquí
+
+// 3. Incluya el resto de las hojas de estilo de Bootstrap requeridas (incluidas las hojas de estilo de modo de color separadas)
+@import "~bootstrap/scss/variables";
+// @import "~bootstrap/scss/variables-dark";
+
+// 4. Incluya cualquier anulación de mapa predeterminada aquí
+
+// 5. Incluir el resto de las partes requeridas
+@import "~bootstrap/scss/maps";
+@import "~bootstrap/scss/mixins";
+@import "~bootstrap/scss/root";
+
+// 6. Opcionalmente, incluya otras partes según sea necesario
+@import "~bootstrap/scss/utilities";
+@import "~bootstrap/scss/reboot";
+@import "~bootstrap/scss/type";
+@import "~bootstrap/scss/images";
+@import "~bootstrap/scss/containers";
+@import "~bootstrap/scss/grid";
+// @import "~bootstrap/scss/helpers";
+@import "~bootstrap/scss/forms";
+@import "~bootstrap/scss/buttons";
+@import "~bootstrap/scss/transitions"; // show|hide navbar
+@import "~bootstrap/scss/nav";
+@import "~bootstrap/scss/navbar";
+
+// 7. Opcionalmente, incluya la API de utilidades en último lugar para generar clases basadas en el mapa Sass en `_utilities.scss`
+@import "~bootstrap/scss/utilities/api"; // mb-1 pb-1
+
+// 8. Agregue código personalizado adicional aquí
