@@ -3,9 +3,10 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 
 type typeStatus = "checking" | "authenticated" | "not-authenticated";
 interface Iuser {
-  id: string;
   name: string;
-  email: string;
+  uid: string;
+  // id: string;
+  // email: string;
 }
 interface IauthState {
   status: typeStatus;
@@ -32,7 +33,16 @@ export const authSlice = createSlice({
       state.user = action.payload;
       state.errorMessage = null;
     },
+    onLogout: (state, action: PayloadAction<string | null>) => {
+      state.status = "not-authenticated";
+      state.user = {} as Iuser;
+      state.errorMessage = action.payload;
+    },
+    clearErrorMessage: (state) => {
+      state.errorMessage = null;
+    },
   },
 });
 // Action creators are generated for each case reducer function
-export const { onChecking, onLogin } = authSlice.actions;
+export const { onChecking, onLogin, onLogout, clearErrorMessage } =
+  authSlice.actions;
