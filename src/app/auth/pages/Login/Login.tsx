@@ -2,6 +2,8 @@ import { Container, Row, Col, Form } from "react-bootstrap";
 import css from "./Login.module.scss";
 import { IinitialForm } from "@/app/auth/domain";
 import { useAuthStore, useForm } from "@/shared/hooks";
+import Swal from "sweetalert2";
+import { useEffect } from "react";
 
 const loginFormFields: IinitialForm = {
   loginEmail: "",
@@ -15,7 +17,7 @@ const registerFormFields: IinitialForm = {
 };
 
 export const Login = () => {
-  const { startLogin } = useAuthStore();
+  const { startLogin, errorMessage } = useAuthStore();
 
   const { formState: formLoginState, onInputChange: onLoginInputChange } =
     useForm(loginFormFields);
@@ -35,6 +37,12 @@ export const Login = () => {
     e.preventDefault();
     console.log(formRegisterState);
   };
+
+  useEffect(() => {
+    if (errorMessage !== null) {
+      Swal.fire("Error en la autenticación", errorMessage, "error");
+    }
+  }, [errorMessage]);
 
   return (
     <Container className={css["login-container"]}>
