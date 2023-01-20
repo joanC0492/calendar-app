@@ -1,7 +1,7 @@
 import { Container, Row, Col, Form } from "react-bootstrap";
 import css from "./Login.module.scss";
-import { useForm } from "@/shared/hooks/useForm";
 import { IinitialForm } from "@/app/auth/domain";
+import { useAuthStore, useForm } from "@/shared/hooks";
 
 const loginFormFields: IinitialForm = {
   loginEmail: "",
@@ -15,6 +15,8 @@ const registerFormFields: IinitialForm = {
 };
 
 export const Login = () => {
+  const { startLogin } = useAuthStore();
+
   const { formState: formLoginState, onInputChange: onLoginInputChange } =
     useForm(loginFormFields);
   const { formState: formRegisterState, onInputChange: onRegisterChange } =
@@ -22,7 +24,11 @@ export const Login = () => {
 
   const loginSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
-    console.log(formLoginState);
+    // Enviamos el usuario y password al hook
+    startLogin({
+      email: formLoginState.loginEmail,
+      password: formLoginState.loginPassword,
+    });
   };
 
   const registerSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
@@ -123,4 +129,3 @@ export const Login = () => {
     </Container>
   );
 };
-
