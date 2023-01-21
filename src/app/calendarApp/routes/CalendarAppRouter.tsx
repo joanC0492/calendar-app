@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import { routes } from "./routes";
 export const CalendarAppRouter = () => {
   return (
@@ -10,6 +10,8 @@ export const CalendarAppRouter = () => {
           element={<route.component />}
         />
       ))}
+      <Route path="*" element={<Navigate replace to={"/"} />} />
     </Routes>
   );
 };
+
