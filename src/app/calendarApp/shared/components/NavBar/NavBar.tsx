@@ -1,3 +1,4 @@
+import { useAuthStore } from "@/shared/hooks";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
@@ -5,12 +6,14 @@ import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 
 export const NavBar = () => {
+  const { startLogout, user } = useAuthStore();
+
   return (
     <Navbar bg="dark" variant="dark" expand="lg">
       <Container>
         <Navbar.Brand href="#">
           <i className="fas fa-calendar-alt" />
-          <span className="ms-2">Joan</span>
+          <span className="ms-2">{user.name}</span>
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
@@ -29,7 +32,7 @@ export const NavBar = () => {
               </NavDropdown.Item>
             </NavDropdown>
           </Nav>
-          <Button variant="outline-danger">
+          <Button variant="outline-danger" onClick={startLogout}>
             <i className="fas fa-sign-out-alt" />
             <span className="ms-1">Salir</span>
           </Button>
@@ -38,3 +41,4 @@ export const NavBar = () => {
     </Navbar>
   );
 };
+

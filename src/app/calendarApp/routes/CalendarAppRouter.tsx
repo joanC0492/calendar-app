@@ -14,4 +14,3 @@ export const CalendarAppRouter = () => {
     </Routes>
   );
 };
-
