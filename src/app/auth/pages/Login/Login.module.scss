@@ -29,6 +29,10 @@
   padding: 1.5%;
   border: none;
   cursor: pointer;
+  &:disabled {
+    opacity: 0.7 !important;
+    cursor: no-drop;
+  }
 }
 .login-form-1 .btnSubmit {
   color: #fff;

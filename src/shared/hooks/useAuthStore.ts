@@ -26,6 +26,24 @@ export const useAuthStore = () => {
     uid: string;
   }
 
+  interface IPostRegister {
+    name: string;
+    email: string;
+    password: string;
+  }
+  interface IRegisterResponse {
+    name: string;
+    ok: boolean;
+    token: string;
+    uid: string;
+  }
+
+  interface Ierror {
+    response: {
+      data: { msg: string };
+    };
+  }
+
   // Es asincrona porque consultara al backend
   const startLogin = async ({
     email,
@@ -49,8 +67,36 @@ export const useAuthStore = () => {
     } catch (error) {
       console.log({ error });
       dispatch(onLogout("Credenciales incorrectas"));
-
       //Limpiamos el mensaje de error
+      setTimeout(() => {
+        dispatch(clearErrorMessage());
+      }, 1000);
+    }
+  };
+
+  const startRegister = async ({
+    name,
+    email,
+    password,
+  }: IinitialForm): Promise<void> => {
+    dispatch(onChecking());
+
+    const body: IPostRegister = {
+      name: name as string,
+      email: email as string,
+      password: password as string,
+    };
+    try {
+      const res = await calendarApi.post("/auth/new", body);
+      const data: IRegisterResponse = res.data;
+      localStorage.setItem("TOKEN", data.token);
+      localStorage.setItem("TOKEN-INIT-DATE", new Date().getTime().toString());
+      console.log(data);
+      dispatch(onLogin({ uid: data.uid, name: data.name }));
+    } catch (error: any) {
+      
+      dispatch(onLogout(error.response.data.msg || "---"));
+
       setTimeout(() => {
         dispatch(clearErrorMessage());
       }, 1000);
@@ -64,5 +110,6 @@ export const useAuthStore = () => {
     user,
     // methods
     startLogin,
+    startRegister,
   };
 };

@@ -1,9 +1,9 @@
 import { Container, Row, Col, Form } from "react-bootstrap";
 import css from "./Login.module.scss";
-import { IinitialForm } from "@/app/auth/domain";
+import { IformValidations, IinitialForm } from "@/app/auth/domain";
 import { useAuthStore, useForm } from "@/shared/hooks";
 import Swal from "sweetalert2";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 
 const loginFormFields: IinitialForm = {
   loginEmail: "",
@@ -16,13 +16,40 @@ const registerFormFields: IinitialForm = {
   registerPassword2: "",
 };
 
+const formRegisterValidations: IformValidations = {
+  registerName: [
+    (value: string): boolean => value.trim().length > 0,
+    "El nombre es obligatorio",
+  ],
+  registerEmail: [
+    (value: string): boolean => value.includes("@"),
+    "El correo debe de tener un arroba",
+  ],
+  registerPassword: [
+    (value: string): boolean => value.length >= 6,
+    "El password debe de tener al menos 6 letras",
+  ],
+  registerPassword2: [
+    (value: string): boolean => value.length >= 6,
+    "El password debe de tener al menos 6 letras",
+  ],
+};
+
 export const Login = () => {
-  const { startLogin, errorMessage } = useAuthStore();
+  const { startLogin, startRegister, status, errorMessage } = useAuthStore();
 
   const { formState: formLoginState, onInputChange: onLoginInputChange } =
     useForm(loginFormFields);
-  const { formState: formRegisterState, onInputChange: onRegisterChange } =
-    useForm(registerFormFields);
+  const {
+    formState: formRegisterState,
+    onInputChange: onRegisterChange,
+    isFormValid,
+  } = useForm(registerFormFields, formRegisterValidations);
+
+  const isCheckingAuthentication: boolean = useMemo(
+    () => status === "checking",
+    [status]
+  );
 
   const loginSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
@@ -35,15 +62,36 @@ export const Login = () => {
 
   const registerSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
-    console.log(formRegisterState);
+    // En caso algun input este mal
+    if (!isFormValid) {
+      Swal.fire("Error en el registro", "Revise los campos llenados", "error");
+      return;
+    }
+    // La contraseña y la repetecion deben ser iguales
+    if (
+      formRegisterState.registerPassword !== formRegisterState.registerPassword2
+    ) {
+      Swal.fire("Error en el registro", "Contraseñas no son iguales", "error");
+      return;
+    }
+    //
+    // console.log(formRegisterState);
+    startRegister({
+      name: formRegisterState.registerName,
+      email: formRegisterState.registerEmail,
+      password: formRegisterState.registerPassword,
+    });
   };
 
   useEffect(() => {
+    console.log("errorMessage", errorMessage);
     if (errorMessage !== null) {
       Swal.fire("Error en la autenticación", errorMessage, "error");
     }
   }, [errorMessage]);
-
+  // console.log("isCheckingAuthentication", isCheckingAuthentication);
+  // console.log("isFormValid", isFormValid);
+  
   return (
     <Container className={css["login-container"]}>
       <Row>
@@ -129,6 +177,8 @@ export const Login = () => {
                 type="submit"
                 className={css["btnSubmit"]}
                 value="Crear cuenta"
+                // disabled={isCheckingAuthentication || !isFormValid}
+                disabled={!isFormValid}
               />
             </Form.Group>
           </Form>
