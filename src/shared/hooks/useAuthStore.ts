@@ -19,29 +19,17 @@ export const useAuthStore = () => {
     email: string;
     password: string;
   }
-  interface ILoginResponse {
-    name: string;
-    ok: boolean;
-    token: string;
-    uid: string;
-  }
-
   interface IPostRegister {
     name: string;
     email: string;
     password: string;
   }
-  interface IRegisterResponse {
+
+  interface IAuthResponse {
     name: string;
     ok: boolean;
     token: string;
     uid: string;
-  }
-
-  interface Ierror {
-    response: {
-      data: { msg: string };
-    };
   }
 
   // Es asincrona porque consultara al backend
@@ -58,7 +46,7 @@ export const useAuthStore = () => {
     // Como puede ocurrir un error lo manejamos con un try catch
     try {
       const res = await calendarApi.post("/auth", body);
-      const data: ILoginResponse = res.data;
+      const data: IAuthResponse = res.data;
       console.log(data);
       //Guardamos nuestro token en localstorage
       localStorage.setItem("TOKEN", data.token);
@@ -88,18 +76,40 @@ export const useAuthStore = () => {
     };
     try {
       const res = await calendarApi.post("/auth/new", body);
-      const data: IRegisterResponse = res.data;
+      const data: IAuthResponse = res.data;
       localStorage.setItem("TOKEN", data.token);
       localStorage.setItem("TOKEN-INIT-DATE", new Date().getTime().toString());
       console.log(data);
       dispatch(onLogin({ uid: data.uid, name: data.name }));
     } catch (error: any) {
-      
       dispatch(onLogout(error.response.data.msg || "---"));
 
       setTimeout(() => {
         dispatch(clearErrorMessage());
       }, 1000);
+    }
+  };
+
+  const checkAuthToken = async (): Promise<void> => {
+    const token = localStorage.getItem("TOKEN");
+    if (!token) {
+      dispatch(onLogout(null));
+      return;
+    }
+    try {
+      const res = await calendarApi.get("/auth/renew");
+      const data: IAuthResponse = res.data;
+
+      // save Token in localStorage
+      localStorage.setItem("TOKEN", data.token);
+      localStorage.setItem("TOKEN-INIT-DATE", new Date().getTime().toString());
+
+      dispatch(onLogin({ name: data.name, uid: data.uid }));
+    } catch (error) {
+      console.log({ error });
+      // En caso de error limpiamos el localstorage
+      localStorage.clear();
+      dispatch(onLogout(null));
     }
   };
 
@@ -111,5 +121,7 @@ export const useAuthStore = () => {
     // methods
     startLogin,
     startRegister,
+    checkAuthToken,
   };
 };
+
