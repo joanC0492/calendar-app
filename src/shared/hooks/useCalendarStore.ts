@@ -6,20 +6,14 @@ import {
   onSetActiveEvent,
   onUpdateEvent,
 } from "@/store/calendar/calendarSlice";
-import { IEventsCalendar } from "@/app/calendarApp/domain";
+import {
+  IEventApi,
+  IEventApiResponse,
+  IEventsApiResponse,
+  IEventsCalendar,
+} from "@/app/calendarApp/domain";
 import { calendarApi } from "@/shared/api";
-
-interface IEventponse {
-  ok: boolean;
-  event: {
-    title: string;
-    notes: string;
-    start: Date;
-    end: Date;
-    user: string;
-    id: string;
-  };
-}
+import { convertEventsToDateEvents } from "@/shared/helpers";
 
 export const useCalendarStore = () => {
   const dispatch = useDispatch();
@@ -32,7 +26,9 @@ export const useCalendarStore = () => {
     dispatch(onSetActiveEvent(calendarEvent));
   };
 
-  const startSavingEvent = async (calendarEvent: IEventsCalendar) => {
+  const startSavingEvent = async (
+    calendarEvent: IEventsCalendar
+  ): Promise<void> => {
     // Si no lo pasamos a numero me da un error
     const body = {
       ...calendarEvent,
@@ -49,7 +45,7 @@ export const useCalendarStore = () => {
       // creando
       // Le agregamos el _id
       const res = await calendarApi.post("/events", body);
-      const data: IEventponse = res.data;
+      const data: IEventApiResponse = res.data;
 
       console.log({ data });
 
@@ -62,14 +58,29 @@ export const useCalendarStore = () => {
     dispatch(onDeleteEvent());
   };
 
+  const startLoadingEvents = async (): Promise<void> => {
+    try {
+      const res = await calendarApi.get("/events");
+      const data: IEventsApiResponse = res.data;
+      // Tener en cuenta que la api nos devuelve la fecha como tipo string
+      // Por eso lo creamos esta funcion para parsearlo a objeto Date
+      const events: IEventApi[] = convertEventsToDateEvents(data.events);
+      console.log({ events });
+    } catch (error) {
+      console.log("Error cargando eventos");
+      console.log({ error });
+    }
+  };
+
   return {
     // Properties
-    events,
     activeEvent,
+    events,
     hasEventSelected: !!activeEvent,
     // Methods
     setActiveEvent,
-    startSavingEvent,
     startDeletingEvent,
+    startLoadingEvents,
+    startSavingEvent,
   };
 };

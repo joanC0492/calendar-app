@@ -9,13 +9,17 @@ import {
   NavBar,
 } from "@/app/calendarApp/shared/components";
 import { getMessagesES, localizer } from "@/app/calendarApp/shared/helpers";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCalendarStore, useUiStore } from "@/shared/hooks";
 import { IEventsCalendar } from "@/app/calendarApp/domain";
 
 export const Calendar = () => {
   const { openDateModal } = useUiStore();
-  const { events: myEventsList, setActiveEvent } = useCalendarStore();
+  const {
+    events: myEventsList,
+    setActiveEvent,
+    startLoadingEvents,
+  } = useCalendarStore();
   const localLastView: View = (localStorage.getItem("LAST_VIEW") ||
     "agenda") as View;
   const [lastView, setLastView] = useState(localLastView);
@@ -50,6 +54,11 @@ export const Calendar = () => {
     localStorage.setItem("LAST_VIEW", e);
     setLastView(e);
   };
+
+  useEffect(() => {
+    startLoadingEvents();
+  }, []);
+  
   return (
     <>
       <NavBar />
