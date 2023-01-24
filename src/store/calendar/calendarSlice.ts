@@ -5,14 +5,16 @@ import { IcalendarState, IEventsCalendar } from "@/app/calendarApp/domain";
 import { addHours } from "date-fns";
 
 const tempEvent: IEventsCalendar = {
-  _id: new Date().getTime(),
+  // _id: new Date().getTime(),
+  id: new Date().getTime() + "",
   title: "Cumpleaños del Jefe",
   notes: "Hay que comprar el pastel",
   start: new Date(),
   end: addHours(new Date(), 2),
   bgColor: "#fafafa",
   user: {
-    _id: "123",
+    // _id: "123",
+    uid: "123",
     name: "Joan",
   },
 };
@@ -40,7 +42,8 @@ export const calendarSlice = createSlice({
     },
     onUpdateEvent: (state, action: PayloadAction<IEventsCalendar>) => {
       state.events = state.events.map((event) => {
-        if (event._id === action.payload._id) return action.payload;
+        // if (event._id === action.payload._id) return action.payload;
+        if (event.id === action.payload.id) return action.payload;
         return event;
       });
     },
@@ -48,7 +51,8 @@ export const calendarSlice = createSlice({
       // Solo si existe el elemento activo
       if (state.activeEvent) {
         state.events = state.events.filter(
-          (event) => event._id !== state.activeEvent?._id
+          // (event) => event._id !== state.activeEvent?._id
+          (event) => event.id !== state.activeEvent?.id
         );
         state.activeEvent = null;
       }
@@ -58,3 +62,5 @@ export const calendarSlice = createSlice({
 // Action creators are generated for each case reducer function
 export const { onSetActiveEvent, onAddNewEvent, onUpdateEvent, onDeleteEvent } =
   calendarSlice.actions;
+
+  

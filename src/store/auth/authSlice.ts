@@ -1,13 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
+import { Iuser } from "@/app/auth/domain";
 
 type typeStatus = "checking" | "authenticated" | "not-authenticated";
-interface Iuser {
-  name: string;
-  uid: string;
-  // id: string;
-  // email: string;
-}
+
 interface IauthState {
   status: typeStatus;
   user: Iuser;
@@ -46,3 +42,5 @@ export const authSlice = createSlice({
 // Action creators are generated for each case reducer function
 export const { onChecking, onLogin, onLogout, clearErrorMessage } =
   authSlice.actions;
+
+  

@@ -17,17 +17,6 @@ import { IEventsCalendar } from "@/app/calendarApp/domain";
 
 registerLocale("es", es);
 
-// const customStyles = {
-//   content: {
-//     top: "50%",
-//     left: "50%",
-//     right: "auto",
-//     bottom: "auto",
-//     marginRight: "-50%",
-//     transform: "translate(-50%, -50%)",
-//   },
-// };
-
 Modal.setAppElement("#root");
 
 const initFormValues = {
@@ -43,6 +32,7 @@ export const CalendarModal = () => {
   const [formValues, setFormValues] = useState(
     initFormValues as IEventsCalendar
   );
+
   const titleClass: string = useMemo(() => {
     // Si es falso entonces no entro al submit
     if (!formSubmitted) return "";
@@ -58,19 +48,23 @@ export const CalendarModal = () => {
       [target.name]: target.value,
     });
   };
+
   const onDateChanged = (e: Date, changing: string) => {
     setFormValues({
       ...formValues,
       [changing]: e,
     });
   };
+
   const onCloseModal = () => {
     // setIsModalOpen(false);
     closeDateModal();
   };
+
   const onSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setFormSubmitted(true);
+
     // La fecha final no puede ser menor que la inicial
     const difference = differenceInSeconds(formValues.end, formValues.start);
     console.log({ difference });
@@ -84,7 +78,7 @@ export const CalendarModal = () => {
       Swal.fire("Titulo incorrecto", "", "error");
       return;
     }
-    console.log(formValues);
+    // console.log(formValues);
     // TODO
     await startSavingEvent(formValues);
     // Cerrar Modal

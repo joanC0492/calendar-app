@@ -1,17 +1,17 @@
+import { Iuser } from "@/app/auth/domain";
+
 export interface IEventsCalendar {
-  _id?: number;
+  id?: string;
   title: string;
   notes: string;
   start: Date;
   end: Date;
   bgColor: string;
-  user: {
-    _id: string;
-    name: string;
-  };
+  user: Iuser;
 }
 
 export interface IcalendarState {
   events: IEventsCalendar[];
   activeEvent: IEventsCalendar | null;
 }
+
