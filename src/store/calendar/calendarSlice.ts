@@ -48,7 +48,7 @@ export const calendarSlice = createSlice({
         state.activeEvent = null;
       }
     },
-
+    
     onLoadEvents: (state, action: PayloadAction<IEventsCalendar[]>) => {
       // state.events = action.payload; // Podriamos usar esto pero haremos algo mejor
       action.payload.forEach((event) => {
