@@ -1,16 +1,17 @@
 import { Iuser } from "@/app/auth/domain";
 
 export interface IEventsCalendar {
+  // bgColor: string;
+  end: Date;
   id?: string;
-  title: string;
   notes: string;
   start: Date;
-  end: Date;
-  bgColor: string;
+  title: string;
   user: Iuser;
 }
 
 export interface IcalendarState {
+  isLoadingEvents: boolean;
   events: IEventsCalendar[];
   activeEvent: IEventsCalendar | null;
 }

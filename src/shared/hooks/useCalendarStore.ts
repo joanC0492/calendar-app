@@ -3,17 +3,17 @@ import { RootState } from "@/store";
 import {
   onAddNewEvent,
   onDeleteEvent,
+  onLoadEvents,
   onSetActiveEvent,
   onUpdateEvent,
 } from "@/store/calendar/calendarSlice";
 import {
-  IEventApi,
   IEventApiResponse,
   IEventsApiResponse,
   IEventsCalendar,
 } from "@/app/calendarApp/domain";
 import { calendarApi } from "@/shared/api";
-import { convertEventsToDateEvents } from "@/shared/helpers";
+import { getEventAdapter, getEventsAdapter } from "@/app/calendarApp/adapters";
 
 export const useCalendarStore = () => {
   const dispatch = useDispatch();
@@ -47,10 +47,11 @@ export const useCalendarStore = () => {
       const res = await calendarApi.post("/events", body);
       const data: IEventApiResponse = res.data;
 
-      console.log({ data });
-
-      // dispatch(onAddNewEvent({ ...calendarEvent, _id: new Date().getTime() }));
-      dispatch(onAddNewEvent({ ...calendarEvent, id: data.event.id, user }));
+      // const event = getEventAdapter(calendarEvent, data, user);
+      const event = getEventAdapter(data, user);
+      console.log({ event });
+      // dispatch(onAddNewEvent({ ...calendarEvent, id: data.event.id, user }));
+      dispatch(onAddNewEvent(event));
     }
   };
 
@@ -64,8 +65,13 @@ export const useCalendarStore = () => {
       const data: IEventsApiResponse = res.data;
       // Tener en cuenta que la api nos devuelve la fecha como tipo string
       // Por eso lo creamos esta funcion para parsearlo a objeto Date
-      const events: IEventApi[] = convertEventsToDateEvents(data.events);
+      // const events = convertEventsToDateEvents(data.events);
+
+      // Cambiamos el nombre de la funcion a getEventsAdapter ya que aqui adaptamos
+      // la respuesta para que sea del mismo tipo que espera
+      const events = getEventsAdapter(data.events);
       console.log({ events });
+      dispatch(onLoadEvents(events));
     } catch (error) {
       console.log("Error cargando eventos");
       console.log({ error });
@@ -84,3 +90,4 @@ export const useCalendarStore = () => {
     startSavingEvent,
   };
 };
+

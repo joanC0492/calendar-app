@@ -2,25 +2,27 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
 import { IcalendarState, IEventsCalendar } from "@/app/calendarApp/domain";
-import { addHours } from "date-fns";
+// import { addHours } from "date-fns";
 
-const tempEvent: IEventsCalendar = {
-  // _id: new Date().getTime(),
-  id: new Date().getTime() + "",
-  title: "Cumpleaños del Jefe",
-  notes: "Hay que comprar el pastel",
-  start: new Date(),
-  end: addHours(new Date(), 2),
-  bgColor: "#fafafa",
-  user: {
-    // _id: "123",
-    uid: "123",
-    name: "Joan",
-  },
-};
+// const tempEvent: IEventsCalendar = {
+//   // _id: new Date().getTime(),
+//   id: new Date().getTime() + "",
+//   title: "Cumpleaños del Jefe",
+//   notes: "Hay que comprar el pastel",
+//   start: new Date(),
+//   end: addHours(new Date(), 2),
+//   bgColor: "#fafafa",
+//   user: {
+//     // _id: "123",
+//     uid: "123",
+//     name: "Joan",
+//   },
+// };
 
 const initialState: IcalendarState = {
-  events: [tempEvent],
+  // events: [tempEvent],
+  isLoadingEvents: true, // Nos dira si esta cargando los eventos o ya se muestran
+  events: [],
   activeEvent: null,
 };
 export const calendarSlice = createSlice({
@@ -57,10 +59,29 @@ export const calendarSlice = createSlice({
         state.activeEvent = null;
       }
     },
+
+    onLoadEvents: (state, action: PayloadAction<IEventsCalendar[]>) => {
+      // state.events = action.payload; // Podriamos usar esto pero haremos algo mejor
+      action.payload.forEach((event) => {
+        // * state.events son los eventos que ya tenemos
+        // * ¿El evento "n" de lo que mandamos por parametro
+        // ya existe en los eventos que ya tenemos?
+        const eventExists = state.events.some(
+          (dbEvent) => dbEvent.id === event.id
+        );
+        // Si no existe es porque es nuevo y debemos agregarlo
+        if (!eventExists) state.events.push(event);
+      });
+
+      state.isLoadingEvents = false; //False porque ya tenemos los eventos
+    },
   },
 });
 // Action creators are generated for each case reducer function
-export const { onSetActiveEvent, onAddNewEvent, onUpdateEvent, onDeleteEvent } =
-  calendarSlice.actions;
-
-  
+export const {
+  onSetActiveEvent,
+  onAddNewEvent,
+  onUpdateEvent,
+  onDeleteEvent,
+  onLoadEvents,
+} = calendarSlice.actions;
