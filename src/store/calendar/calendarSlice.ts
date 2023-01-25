@@ -2,22 +2,6 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
 import { IcalendarState, IEventsCalendar } from "@/app/calendarApp/domain";
-// import { addHours } from "date-fns";
-
-// const tempEvent: IEventsCalendar = {
-//   // _id: new Date().getTime(),
-//   id: new Date().getTime() + "",
-//   title: "Cumpleaños del Jefe",
-//   notes: "Hay que comprar el pastel",
-//   start: new Date(),
-//   end: addHours(new Date(), 2),
-//   bgColor: "#fafafa",
-//   user: {
-//     // _id: "123",
-//     uid: "123",
-//     name: "Joan",
-//   },
-// };
 
 const initialState: IcalendarState = {
   // events: [tempEvent],
@@ -43,13 +27,18 @@ export const calendarSlice = createSlice({
       state.activeEvent = null;
     },
     onUpdateEvent: (state, action: PayloadAction<IEventsCalendar>) => {
+      // * Recorremos los eventos almacenados
       state.events = state.events.map((event) => {
-        // if (event._id === action.payload._id) return action.payload;
+        // * Si algun evento tiene el mismo codigo significa
+        // que encontramos el evento a modificar
+        // asi que le asignamos su nuevo valor
         if (event.id === action.payload.id) return action.payload;
+        // *En caso de no ser el evento a modificar
+        // retornamos su valor original
         return event;
       });
     },
-    onDeleteEvent: (state) => {
+    onDeleteEvent: (state) => { 
       // Solo si existe el elemento activo
       if (state.activeEvent) {
         state.events = state.events.filter(
