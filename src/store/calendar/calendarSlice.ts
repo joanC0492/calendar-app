@@ -38,7 +38,7 @@ export const calendarSlice = createSlice({
         return event;
       });
     },
-    onDeleteEvent: (state) => { 
+    onDeleteEvent: (state) => {
       // Solo si existe el elemento activo
       if (state.activeEvent) {
         state.events = state.events.filter(
@@ -48,7 +48,7 @@ export const calendarSlice = createSlice({
         state.activeEvent = null;
       }
     },
-    
+
     onLoadEvents: (state, action: PayloadAction<IEventsCalendar[]>) => {
       // state.events = action.payload; // Podriamos usar esto pero haremos algo mejor
       action.payload.forEach((event) => {
@@ -64,13 +64,19 @@ export const calendarSlice = createSlice({
 
       state.isLoadingEvents = false; //False porque ya tenemos los eventos
     },
+    onLogoutCalendar: (state) => {
+      state.isLoadingEvents = true;
+      state.events = [];
+      state.activeEvent = null;
+    },
   },
 });
 // Action creators are generated for each case reducer function
 export const {
-  onSetActiveEvent,
   onAddNewEvent,
-  onUpdateEvent,
   onDeleteEvent,
   onLoadEvents,
+  onLogoutCalendar,
+  onSetActiveEvent,
+  onUpdateEvent,
 } = calendarSlice.actions;
