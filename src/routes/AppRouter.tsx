@@ -13,7 +13,7 @@ export const AppRouter = () => {
 
   // Cada vez que renderice validamos si el token es valido :)
   useEffect(() => {
-    console.log("Ingreso al useEffect");
+    // console.log("Ingreso al useEffect");
     checkAuthToken().then();
   }, []);
 

@@ -10,11 +10,13 @@ import {
 } from "@/app/calendarApp/shared/components";
 import { getMessagesES, localizer } from "@/app/calendarApp/shared/helpers";
 import { useEffect, useState } from "react";
-import { useCalendarStore, useUiStore } from "@/shared/hooks";
+import { useAuthStore, useCalendarStore, useUiStore } from "@/shared/hooks";
 import { IEventsCalendar } from "@/app/calendarApp/domain";
 
 export const Calendar = () => {
   const { openDateModal } = useUiStore();
+  const { user } = useAuthStore();
+  // console.log("userLogueado", user);
   const {
     events: myEventsList,
     setActiveEvent,
@@ -32,8 +34,9 @@ export const Calendar = () => {
   ) => {
     // console.log({ event, start, end, isSelected });
     // Estilos para el evento agendado
+    const color = user.uid === event.user.uid ? "#347cf7" : "#465660";
     const style = {
-      backgroundColor: "#347cf7",
+      backgroundColor: color,
       borderRadius: "0px",
       opacity: 0.8,
       color: "white",
@@ -58,7 +61,7 @@ export const Calendar = () => {
   useEffect(() => {
     startLoadingEvents();
   }, []);
-  
+
   return (
     <>
       <NavBar />
